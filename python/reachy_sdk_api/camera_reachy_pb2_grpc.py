@@ -3,6 +3,7 @@
 import grpc
 
 import camera_reachy_pb2 as camera__reachy__pb2
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
 class CameraServiceStub(object):
@@ -39,6 +40,11 @@ class CameraServiceStub(object):
                 request_serializer=camera__reachy__pb2.ZoomCommand.SerializeToString,
                 response_deserializer=camera__reachy__pb2.ZoomCommandAck.FromString,
                 )
+        self.SendRestartRequest = channel.unary_unary(
+                '/reachy.sdk.camera.CameraService/SendRestartRequest',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=camera__reachy__pb2.RestartCommandAck.FromString,
+                )
 
 
 class CameraServiceServicer(object):
@@ -74,6 +80,12 @@ class CameraServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SendRestartRequest(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_CameraServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -101,6 +113,11 @@ def add_CameraServiceServicer_to_server(servicer, server):
                     servicer.SendZoomCommand,
                     request_deserializer=camera__reachy__pb2.ZoomCommand.FromString,
                     response_serializer=camera__reachy__pb2.ZoomCommandAck.SerializeToString,
+            ),
+            'SendRestartRequest': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendRestartRequest,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=camera__reachy__pb2.RestartCommandAck.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -194,5 +211,22 @@ class CameraService(object):
         return grpc.experimental.unary_unary(request, target, '/reachy.sdk.camera.CameraService/SendZoomCommand',
             camera__reachy__pb2.ZoomCommand.SerializeToString,
             camera__reachy__pb2.ZoomCommandAck.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendRestartRequest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/reachy.sdk.camera.CameraService/SendRestartRequest',
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            camera__reachy__pb2.RestartCommandAck.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
